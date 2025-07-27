@@ -19,9 +19,12 @@ $login = function () {
 
     Session::regenerate();
 
-    $this->redirect(route('console-index'),
-        navigate: false
-    );
+    // Redirect based on user role
+    if (Auth::user()->role === 1) {
+        $this->redirect(route('admin.dashboard'), navigate: false);
+    } else {
+        $this->redirect(route('user.profile.index'), navigate: false);
+    }
 };
 
 ?>

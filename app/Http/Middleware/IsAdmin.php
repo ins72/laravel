@@ -3,6 +3,8 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class IsAdmin
 {
@@ -10,22 +12,19 @@ class IsAdmin
      * Handle an incoming request.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @return mixed
+     * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
+     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function handle($request, Closure $next)
-    {  
-        // if (env('APP_DEMO') && isset($_POST['_token'])) {
-        //     return back()->with('error', __('Action disabled in demo.'));
-        // }
-        // if ($request->user() && $request->user()->role == 1 && !\SandyTeam::is_set_team()) {
-        //     return $next($request);
-        // }
-        
-        header("Access-Control-Allow-Origin: *"); 
-        if ($request->user() && $request->user()->role == 1) {
-            return $next($request);
+    public function handle(Request $request, Closure $next)
+    {
+        if (!Auth::check()) {
+            return redirect()->route('login');
         }
-        return abort(404);
+
+        if (Auth::user()->role !== 1) {
+            abort(403, 'Unauthorized access. Admin privileges required.');
+        }
+
+        return $next($request);
     }
 }

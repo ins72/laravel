@@ -6,14 +6,14 @@ import { ViteMinifyPlugin } from 'vite-plugin-minify'
 
 
 export default defineConfig({
-    // server: {
-    //     // Use later npm run dev -- --host 172.20.10.3
-    //     // host: true
-    //     // cors: false,
-    //     hmr: {
-    //         // host: 'localhost',
-    //     },
-    // },
+    server: {
+        port: 3005,
+        host: true,
+        cors: true,
+        hmr: {
+            host: 'localhost',
+        },
+    },
     build: {
         cssCodeSplit: true,
     },
@@ -79,3 +79,4 @@ export default defineConfig({
         },
     },
 });
+

@@ -16,7 +16,7 @@
         $sandyembed = new YenaEmbed($link);
         $fetch = $sandyembed->fetch();
 
-        dd($fetch);
+        // dd($fetch);
         
         return $fetch;
    };

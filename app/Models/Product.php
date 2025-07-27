@@ -3,190 +3,167 @@
 namespace App\Models;
 
 use App\Models\Base\Product as BaseProduct;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\User;
+use App\Models\Site;
 
 class Product extends BaseProduct
 {
-	protected $fillable = [
-		'user_id',
-		'name',
-		'slug',
-		'status',
-		'price_type',
-		'price',
-		'price_pwyw',
-		'comparePrice',
-		'enableOptions',
-		'isDeal',
-		'dealPrice',
-		'dealEnds',
-		'enableBid',
-		'stock',
-		'stock_settings',
-		'productType',
-		'banner',
-		'media',
-		'description',
-		'ribbon',
-		'seo',
-		'api',
-		'files',
-		'extra',
-		'position'
-	];
+    use SoftDeletes, HasFactory;
 
-	
-	protected $casts = [
-		'user' => 'int',
-		'status' => 'int',
-		'price_type' => 'int',
-		'price' => 'float',
-		'enableOptions' => 'int',
-		'isDeal' => 'int',
-		'enableBid' => 'int',
-		'stock' => 'int',
-		'productType' => 'int',
-		'position' => 'int',
+    protected $fillable = [
+        'user_id',
+        'name',
+        'slug',
+        'status',
+        'price_type',
+        'price',
+        'price_pwyw',
+        'comparePrice',
+        'enableOptions',
+        'isDeal',
+        'dealPrice',
+        'dealEnds',
+        'enableBid',
+        'stock',
+        'stock_settings',
+        'sku',
+        'productType',
+        'banner',
+        'featured_img',
+        'media',
+        'description',
+        'external_product_link',
+        'min_quantity',
+        'ribbon',
+        'seo',
+        'api',
+        'files',
+        'extra',
+        'position',
+    ];
 
-		
-		'media' => 'array',
-		'extra' => 'array',
-		'banner' => 'array',
-		'stock_settings' => 'array',
-		'seo' => 'array',
-		'files' => 'array'
-	];
+    protected $casts = [
+        'price' => 'float',
+        'dealPrice' => 'float',
+        'dealEnds' => 'datetime',
+        'stock' => 'integer',
+        'stock_settings' => 'array',
+        'media' => 'array',
+        'seo' => 'array',
+        'api' => 'array',
+        'files' => 'array',
+        'extra' => 'array',
+        'ribbon' => 'array',
+        'banner' => 'array',
+        'featured_img' => 'array',
+    ];
 
-	protected $dates = [
-		'dealEnds'
-	];
+    // Relationships
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
-	public function getFeaturedImage(){
-		
-		$gallery = $this->banner;
-		$gallery = !empty($gallery) && is_array($gallery) ? gs('media/store/image', array_values($gallery)[0] ?? '') : null;
+    public function site()
+    {
+        return $this->belongsTo(Site::class);
+    }
 
-		$image = null;
+    // Scopes
+    public function scopeActive($query)
+    {
+        return $query->where('status', 1);
+    }
 
-		if($this->featured_img){
-			$image = gs('media/store/image', $this->featured_img);
-		}
+    public function scopeFeatured($query)
+    {
+        return $query->where('featured_img', '!=', null);
+    }
 
-		if(empty($this->featured_img)) $image = $gallery;
+    public function scopeInStock($query)
+    {
+        return $query->where(function($q) {
+            $q->whereNull('stock')->orWhere('stock', '>', 0);
+        });
+    }
 
-		return $image;
-	}
-	public function reviews() {
-		return $this->hasMany(ProductReview::class, 'product_id', 'id');
-	}
-
-	public function user(){
-		return $this->belongsTo(User::class, 'user_id', 'id');
-	}
-
-	public function getPrice(){
-		$price = $this->user()->first()->price($this->price);
-		// $price = Bio::price($this->price, $this->user);
-
-		// if(ao($this->extra, 'amazon_product')){
-		// 	$price = ao($this->extra, 'price');
-		// }
-
-		// if($this->linked_ref){
-		// 	if($linked = Product::where('id', $this->linked_ref)->first()){
-		// 		$price = Bio::price($linked->price, $linked->user);
-		// 	}
-		// }
-
-		return $price;
-	}
-
-	
-    public function hasPurchased($payee){
-		$product_id = $this->id;
-        $order = ProductOrder::where('user_id', $this->user_id)->where('payee_user_id', $payee);
-
-        $has_order = function() use($order, $product_id){
-            foreach ($order->get() as $item) {
-               if (in_array($product_id, $item->products)) {
-                   return true;
-               }
-            }
-
-
-            return false;
-        };
-
-        // $enrollment = ProductOrder::where('user', $bio_id)->where('payee_user_id', $payee->id)->orderBy('id', 'DESC')->first();
-        // $now = \Carbon\Carbon::now();
-        // if ($has_order() && $enrollment) {
-        //     if (is_array(ao($enrollment->extra, 'cart'))) {
-
-        //         // code...
-
-
-        //         foreach (ao($enrollment->extra, 'cart') as $key => $value) {
-        //             $product = Product::find(ao($value, 'attributes.product_id'));
-
-        //             if ($product && $product->price_type == 2  && ao($value, 'attributes.product_id') == $product_id) {
-
-        //                 $expiry = \Carbon\Carbon::parse(ao($value, 'attributes.membership.expire'));
-        //                 $expired = \Carbon\Carbon::parse($now)->isAfter($expiry);
-
-        //                 if (ao($value, 'attributes.membership.status') && !$expired) {
-        //                     return true;
-        //                 }
-
-        //                 return false;
-        //             }
-        //         }
-        //     }
-        // }
-
-        if ($has_order()) {
-            return true;
+    // Accessors
+    public function getFormattedPriceAttribute()
+    {
+        if ($this->price_type === 2) { // PWYW
+            return $this->price_pwyw ?? 'Pay What You Want';
         }
-
-
-        return false;
-    }
-	
-	public function variant(){
-        return $this->hasMany(ProductOption::class, 'product_id', 'id');
+        
+        return $this->price ? '$' . number_format($this->price, 2) : 'Free';
     }
 
-	public function allMedia(){
-		$media = $this->media ?: [];
-
-		array_push($media, $this->featured_img);
-
-		$process = [];
-
-		foreach($media as $item){
-			if(!mediaExists('media/store/image', $item)) return;
-
-			$process[] = gs('media/store/image', $item);
-		}
-
-		return $process;
-	}
-
-    protected static function boot(){
-        parent::boot();
-
-        static::creating(function ($model) {
-            $model->slug = $model->slug ? $model->slug : (string) str()->random(17);
-        });
-		
-        static::updated(function ($model) {
-            $model->slug = $model->slug ? $model->slug : (string) str()->random(17);
-        });
+    public function getIsOnSaleAttribute()
+    {
+        return $this->isDeal && $this->dealEnds && $this->dealEnds->isFuture();
     }
 
-    // protected static function boot(){
-    //     parent::boot();
+    public function getSalePriceAttribute()
+    {
+        if ($this->isOnSale && $this->dealPrice) {
+            return $this->dealPrice;
+        }
+        return $this->price;
+    }
 
-    //     static::creating(function ($model) {
-    //         $model->uuid = $model->uuid ? $model->uuid : (string) str()->uuid();
-    //     });
-    // }
+    // CRUD Methods
+    public static function createProduct($data)
+    {
+        $data['slug'] = \Str::slug($data['name']);
+        return static::create($data);
+    }
+
+    public function updateProduct($data)
+    {
+        if (isset($data['name'])) {
+            $data['slug'] = \Str::slug($data['name']);
+        }
+        return $this->update($data);
+    }
+
+    public function deleteProduct()
+    {
+        // Delete associated files
+        if ($this->featured_img) {
+            $this->deleteImage($this->featured_img);
+        }
+        if ($this->banner) {
+            $this->deleteImage($this->banner);
+        }
+        
+        return $this->delete();
+    }
+
+    private function deleteImage($imageData)
+    {
+        if (is_array($imageData) && isset($imageData['url'])) {
+            $path = str_replace('/storage/', '', $imageData['url']);
+            if (\Storage::disk('public')->exists($path)) {
+                \Storage::disk('public')->delete($path);
+            }
+        }
+    }
+
+    // Validation Rules
+    public static function getValidationRules($productId = null)
+    {
+        $uniqueRule = $productId ? 'unique:products,slug,' . $productId : 'unique:products,slug';
+        
+        return [
+            'name' => 'required|string|max:255',
+            'slug' => 'nullable|string|max:255|' . $uniqueRule,
+            'price' => 'nullable|numeric|min:0',
+            'price_type' => 'required|integer|in:1,2,3', // 1=fixed, 2=pwyw, 3=free
+            'status' => 'required|integer|in:0,1',
+            'stock' => 'nullable|integer|min:0',
+            'description' => 'nullable|string',
+            'user_id' => 'required|exists:users,id',
+        ];
+    }
 }

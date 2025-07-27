@@ -11,7 +11,7 @@ on([
    'mediaEventToDispatch' => fn ($event) => $this->eventToDispatch = $event,
    'mediaEventDispatcher' => function($event, $sectionBack){
 
-      dd($event);
+      // dd($event);
       $this->eventToDispatch = $event;
       if($sectionBack) $this->sectionBack = $sectionBack;
    },

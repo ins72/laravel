@@ -17,8 +17,7 @@ Route::get('verify/{sxref}', 'Controllers\ClickController@verify')->name('verify
 Route::post('prepare', 'Controllers\ClickController@prepare')->name('prepare');
 Route::post('complete', 'Controllers\ClickController@complete')->name('complete');
 
-Route::get('lol', function(){
-
-    dd('zzz');
-});
+// Route::get('lol', function(){
+//     dd('zzz');
+// });
 // Route::post('webhook', 'Controllers\StripeController@webhook')->name('webhook');

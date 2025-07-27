@@ -110,7 +110,7 @@
          // fwrite($fp, '<?php return ' . var_export(config('sections'), true) . ';');
          // fclose($fp);
 
-         dd(json_encode($sections));
+         // dd(json_encode($sections));
       },
 
       'section::create' => function($section){
@@ -284,7 +284,7 @@
    updated([
       'site.name' => function(){
 
-         dd('sdfsd');
+         // dd('sdfsd');
          $this->site->save();
       }
    ]);

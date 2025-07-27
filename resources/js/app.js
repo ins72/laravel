@@ -10,20 +10,20 @@ import html2canvas from 'html2canvas';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import ApexCharts from 'apexcharts'
-import Quill from 'quill';
-import FlipClock from 'flipclock';
-import Swiper from 'swiper/bundle';
-import Pickr from '@simonwep/pickr';
+// import Quill from 'quill';
+// import FlipClock from 'flipclock';
+// import Swiper from 'swiper/bundle';
+// import Pickr from '@simonwep/pickr';
 
-window.Pickr = Pickr;
-window.Swiper = Swiper;
-window.FlipClock = FlipClock;
+// window.Pickr = Pickr;
+// window.Swiper = Swiper;
+// window.FlipClock = FlipClock;
 window.ApexCharts = ApexCharts;
 
 window.saveAs = saveAs
 window.html2canvas = html2canvas;
 
-window.Quill = Quill;
+// window.Quill = Quill;
 window.Ai = Ai;
 window.tippy = tippy
 window._ = _;

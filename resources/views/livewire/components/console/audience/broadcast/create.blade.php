@@ -144,7 +144,7 @@
 
    $save = function(){
 
-        dd($this->content);
+        // dd($this->content);
         $broadcast = new AudienceBroadcast;
         $broadcast->user_id = $this->user->id;
         $broadcast->name = $this->name;

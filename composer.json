@@ -17,6 +17,8 @@
         "donatello-za/rake-php-plus": "^1.0",
         "guzzlehttp/guzzle": "^7.2",
         "jenssegers/agent": "^2.6",
+        "jenssegers/mongodb": "^5.4",
+        "knuckleswtf/scribe": "^5.2",
         "lab404/laravel-impersonate": "^1.7",
         "laravel/folio": "^1.1.5",
         "laravel/framework": "^10.38",

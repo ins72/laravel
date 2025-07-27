@@ -3,11 +3,11 @@
 @import "@flaticon/flaticon-uicons/css/all/all";
 @import "simplemde/dist/simplemde.min.css";
 @import './iconfont/iconfont.css';
-@import "quill/dist/quill.core.css";
-@import "quill/dist/quill.snow.css";
-@import 'animate.css';
-@import 'swiper/css/bundle';
-@import '@simonwep/pickr/dist/themes/nano.min.css';
+/* @import "quill/dist/quill.core.css"; */
+/* @import "quill/dist/quill.snow.css"; */
+/* @import 'animate.css'; */
+/* @import 'swiper/css/bundle'; */
+/* @import '@simonwep/pickr/dist/themes/nano.min.css'; */
 
 .loader {
     width: 48px;

@@ -1,7 +1,7 @@
 import { Livewire, Alpine } from '../../vendor/livewire/livewire/dist/livewire.esm';
 import Tooltip from "@ryangjchandler/alpine-tooltip";
 import Sortable from 'sortablejs';
-import masonry from 'alpinejs-masonry'
+// import masonry from 'alpinejs-masonry'
 // import component from '@vimesh/ui'
 import md5 from 'crypto-js/md5';
  
@@ -12,45 +12,45 @@ import moment from 'moment';
 import Navigo from 'navigo';
 import Sections from './sections'
 import navigate from './navigate'
-import RateYo from "rateyo";
+// import RateYo from "rateyo";
 
-import EditorJS from '@editorjs/editorjs';
-import Header from '@editorjs/header'; 
-import List from '@editorjs/list';
-import Quote from '@editorjs/quote';
-import Delimiter from '@editorjs/delimiter';
-import Warning from '@editorjs/warning';
-import CodeTool from '@editorjs/code';
-import RawTool from '@editorjs/raw';
-import Checklist from '@editorjs/checklist';
-import Paragraph from '@editorjs/paragraph';
-import ImageTool from '@editorjs/image';
-import { Calendar } from '@fullcalendar/core';
-import interactionPlugin, { Draggable } from '@fullcalendar/interaction';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import timeGridPlugin from '@fullcalendar/timegrid';
-import listPlugin from '@fullcalendar/list';
-import Color from 'color';
+// import EditorJS from '@editorjs/editorjs';
+// import Header from '@editorjs/header'; 
+// import List from '@editorjs/list';
+// import Quote from '@editorjs/quote';
+// import Delimiter from '@editorjs/delimiter';
+// import Warning from '@editorjs/warning';
+// import CodeTool from '@editorjs/code';
+// import RawTool from '@editorjs/raw';
+// import Checklist from '@editorjs/checklist';
+// import Paragraph from '@editorjs/paragraph';
+// import ImageTool from '@editorjs/image';
+// import { Calendar } from '@fullcalendar/core';
+// import interactionPlugin, { Draggable } from '@fullcalendar/interaction';
+// import dayGridPlugin from '@fullcalendar/daygrid';
+// import timeGridPlugin from '@fullcalendar/timegrid';
+// import listPlugin from '@fullcalendar/list';
+// import Color from 'color';
 
-window.Color = Color
-window.Calendar = Calendar;
-window.interactionPlugin = interactionPlugin;
-window.dayGridPlugin = dayGridPlugin;
-window.timeGridPlugin = timeGridPlugin;
-window.listPlugin = listPlugin;
-window.EditorJS = EditorJS;
-window.EditorTools = {
-    Header,
-    List,
-    Quote,
-    Delimiter,
-    Warning,
-    CodeTool,
-    RawTool,
-    Checklist,
-    ImageTool,
-    Paragraph,
-};
+// window.Color = Color
+// window.Calendar = Calendar;
+// window.interactionPlugin = interactionPlugin;
+// window.dayGridPlugin = dayGridPlugin;
+// window.timeGridPlugin = timeGridPlugin;
+// window.listPlugin = listPlugin;
+// window.EditorJS = EditorJS;
+// window.EditorTools = {
+//     Header,
+//     List,
+//     Quote,
+//     Delimiter,
+//     Warning,
+//     CodeTool,
+//     RawTool,
+//     Checklist,
+//     ImageTool,
+//     Paragraph,
+// };
 
 window.Navigo = Navigo;
 window.moment = moment;

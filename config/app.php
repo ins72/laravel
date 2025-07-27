@@ -179,13 +179,13 @@ return [
         /*
          * Package Service Providers...
          */
-        browner12\helpers\HelperServiceProvider::class,
-        Jenssegers\Agent\AgentServiceProvider::class,
-        Darryldecode\Cart\CartServiceProvider::class,
-        MarkSitko\LaravelUnsplash\UnsplashServiceProvider::class,
-        Lab404\Impersonate\ImpersonateServiceProvider::class,
-        Amirami\Localizator\ServiceProvider::class,
-        'Camroncade\Timezone\TimezoneServiceProvider',
+        // browner12\helpers\HelperServiceProvider::class,
+        // Jenssegers\Agent\AgentServiceProvider::class,
+        // Darryldecode\Cart\CartServiceProvider::class,
+        // MarkSitko\LaravelUnsplash\UnsplashServiceProvider::class,
+        // Lab404\Impersonate\ImpersonateServiceProvider::class,
+        // Amirami\Localizator\ServiceProvider::class,
+        // 'Camroncade\Timezone\TimezoneServiceProvider',
 
         /*
          * Application Service Providers...
@@ -216,8 +216,8 @@ return [
     'aliases' => Facade::defaultAliases()->merge([
         'Country'   => \App\Yena\Country::class,
         'Currency'  => \App\Yena\Currency::class,
-        'Cart'      => Darryldecode\Cart\Facades\CartFacade::class,
-        'Unsplash'  => MarkSitko\LaravelUnsplash\Facades\Unsplash::class,
+        // 'Cart'      => Darryldecode\Cart\Facades\CartFacade::class,
+        // 'Unsplash'  => MarkSitko\LaravelUnsplash\Facades\Unsplash::class,
     ])->toArray(),
 
     /* 

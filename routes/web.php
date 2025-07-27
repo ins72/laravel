@@ -1,23 +1,9 @@
 <?php
 
-use App\Models\Invoice;
-use App\Yena\Ai\Image;
-use App\Yena\YenaMail;
-use Livewire\Volt\Volt;
-use Laravel\Folio\Folio;
-use App\Yena\Site\Generate;
-use App\Models\OrganizationPage;
-use App\Yena\aaPanel;
-use App\Yena\Ai\Purify;
-use App\Yena\Site\DefaultLanding;
-use App\Yena\YenaEmbed;
-use App\YenaOauth\Facades\YenaOauth;
-use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Route;
-use MarkSitko\LaravelUnsplash\Facades\Unsplash;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Http\Client\RequestException;
-use Barryvdh\DomPDF\Facade\Pdf;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\User\ProfileController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -28,187 +14,71 @@ use Barryvdh\DomPDF\Facade\Pdf;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+// Admin Routes
+Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(function () {
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/analytics', [DashboardController::class, 'analytics'])->name('analytics');
+    
+    // User Management
+    Route::get('/users', [DashboardController::class, 'users'])->name('users.index');
+    Route::get('/users/{id}', [DashboardController::class, 'userShow'])->name('users.show');
+    Route::get('/users/{id}/edit', [DashboardController::class, 'userEdit'])->name('users.edit');
+    Route::put('/users/{id}', [DashboardController::class, 'userUpdate'])->name('users.update');
+    Route::delete('/users/{id}', [DashboardController::class, 'userDelete'])->name('users.delete');
+    
+    // Product Management
+    Route::get('/products', [DashboardController::class, 'products'])->name('products.index');
+    Route::get('/products/{id}', [DashboardController::class, 'productShow'])->name('products.show');
+    Route::get('/products/{id}/edit', [DashboardController::class, 'productEdit'])->name('products.edit');
+    Route::put('/products/{id}', [DashboardController::class, 'productUpdate'])->name('products.update');
+    Route::delete('/products/{id}', [DashboardController::class, 'productDelete'])->name('products.delete');
+    
+    // Site Management
+    Route::get('/sites', [DashboardController::class, 'sites'])->name('sites.index');
+    Route::get('/sites/{id}', [DashboardController::class, 'siteShow'])->name('sites.show');
+    Route::get('/sites/{id}/edit', [DashboardController::class, 'siteEdit'])->name('sites.edit');
+    Route::put('/sites/{id}', [DashboardController::class, 'siteUpdate'])->name('sites.update');
+    Route::delete('/sites/{id}', [DashboardController::class, 'siteDelete'])->name('sites.delete');
+});
+
+// User Profile Routes
+Route::prefix('user')->middleware('auth')->name('user.')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::get('/profile/change-password', [ProfileController::class, 'changePassword'])->name('profile.change-password');
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.update-password');
+    Route::get('/profile/settings', [ProfileController::class, 'settings'])->name('profile.settings');
+    Route::put('/profile/settings', [ProfileController::class, 'updateSettings'])->name('profile.update-settings');
+    
+    // Site Management
+    Route::get('/sites', [ProfileController::class, 'sites'])->name('sites.index');
+    Route::get('/sites/create', [ProfileController::class, 'siteCreate'])->name('sites.create');
+    Route::post('/sites', [ProfileController::class, 'siteStore'])->name('sites.store');
+    Route::get('/sites/{id}/edit', [ProfileController::class, 'siteEdit'])->name('sites.edit');
+    Route::put('/sites/{id}', [ProfileController::class, 'siteUpdate'])->name('sites.update');
+    Route::delete('/sites/{id}', [ProfileController::class, 'siteDelete'])->name('sites.delete');
+    
+    // Product Management
+    Route::get('/products', [ProfileController::class, 'products'])->name('products.index');
+    Route::get('/products/create', [ProfileController::class, 'productCreate'])->name('products.create');
+    Route::post('/products', [ProfileController::class, 'productStore'])->name('products.store');
+    Route::get('/products/{id}/edit', [ProfileController::class, 'productEdit'])->name('products.edit');
+    Route::put('/products/{id}', [ProfileController::class, 'productUpdate'])->name('products.update');
+    Route::delete('/products/{id}', [ProfileController::class, 'productDelete'])->name('products.delete');
+    
+    // Course Management
+    Route::get('/courses', [ProfileController::class, 'courses'])->name('courses.index');
+    Route::get('/courses/create', [ProfileController::class, 'courseCreate'])->name('courses.create');
+    Route::post('/courses', [ProfileController::class, 'courseStore'])->name('courses.store');
+    Route::get('/courses/{id}/edit', [ProfileController::class, 'courseEdit'])->name('courses.edit');
+    Route::put('/courses/{id}', [ProfileController::class, 'courseUpdate'])->name('courses.update');
+    Route::delete('/courses/{id}', [ProfileController::class, 'courseDelete'])->name('courses.delete');
+});
+
 require __DIR__.'/auth.php';
-
-
-Route::name('run-')->namespace('App\Http\Controllers\Run')->group(function() {
-  Route::get('run-update', 'DatabaseController@update')->name('update');
-  Route::get('run-cron', 'CronController@run')->name('cron');
-});
-
-Route::get('lol', function(){
-    //实例化对象
-    $api = new aaPanel();
-    //获取面板日志
-    $r_data = $api->RemoveDomain('jeffjola.com');
-    return;
-    $r_data = $api->AddDomain('wepsteb.com', 'jeffjola.com');
-    //输出JSON数据到浏览器
-    echo json_encode($r_data);
-
-    return;
-    $invoice = Invoice::first();
-    $mail = new \App\Yena\YenaMail;
-    $mail->send([
-        'to' => 'jeffjola@gmail.com',
-        'subject' => __('You just got tipped'),
-    ], 'invoice.email', [
-        'amount' => '$2000',
-        'invoice' => $invoice
-    ]);
-
-    return;
-
-    // return view('includes.invoicepdf');
-    
-    $data = [
-        'imagePath'    => public_path('img/profile.png'),
-        'name'         => 'John Doe',
-        'address'      => 'USA',
-        'mobileNumber' => '000000000',
-        'email'        => 'john.doe@email.com'
-    ];
-    $pdf = PDF::loadView('includes.invoicepdf', $data);
-    return $pdf->stream('resume.pdf');
-    return;
-    $user_id = 1234; // Example user ID
-    $unique_string = encodeCrc($user_id);
-    $retrieved_user_id = decodeCrc($unique_string);
-    
-    echo "Retrieved User ID: " . $retrieved_user_id;
-    echo "Encoded String: " . $unique_string;
-
-    return;
-    $mail = new \App\Yena\YenaMail;
-    $mail->send([
-        'to' => 'jeffjola@gmail.com',
-        'subject' => __('You just got tipped'),
-    ], 'bio.tip', [
-        'amount' => '$2000',
-        'user' => $this
-    ]);
-
-    return;
-    $sandyembed = new YenaEmbed('https://www.tiktok.com/@andsea_miyakoisland/video/7358077798319131912');
-    $fetch = $sandyembed->fetch();
-
-
-    dd($fetch);
-    try {
-        $response = Http::post('http://gamma.test/payments/click/prepare', [
-            'key1' => 'value1',
-            'key2' => 'value2',
-            // Add more key-value pairs as needed
-        ]);
-    
-        if ($response->successful()) {
-            $data = $response->json();
-            dd($data, 'data');
-            // Do something with $data
-        } else {
-            // Handle non-2xx responses
-            $error = $response->body();
-
-            dd('ee', $error, 'zzz');
-            // Log or handle the error as needed
-        }
-    } catch (RequestException $e) {
-
-        dd('rr', $e->getMessage());
-        // Handle exceptions
-        $error = $e->getMessage();
-        // Log or handle the exception as needed
-    }
-    dd('zzz');
-    dd(get_vite_site_resources());
-    $r = new DefaultLanding;
-    return $r->build();
-});
-
-YenaOauth::routes();
-
-Route::prefix('console')->name('console-')->namespace('App\Http\Controllers')->group(function() {
-  Route::get('builder/ai', 'Console\Builder\AiController@ai')->name('builder-ai');
-});
-
-// Admin
-Route::prefix('console/admin')->name('console-admin-')->namespace('App\Http\Controllers\Admin')->middleware(['isAdmin'])->group(function() {
-    Route::prefix('users')->name('users-')->namespace('Users')->group(function(){
-        Route::get('/', 'UsersController@index')->name('index');
-        Route::post('post/{tree}', 'PostController@tree')->name('post');
-    });
-
-    Route::prefix('sites')->name('sites-')->namespace('Sites')->group(function(){
-        Route::get('/', 'SitesController@index')->name('index');
-        // Route::get('view-report/{_id}', 'PagesController@view_report')->name('view-report');
-        Route::post('post/{tree}', 'PostController@tree')->name('post');
-    });
-
-    Route::prefix('bio')->name('bio-')->namespace('Bio')->group(function(){
-        Route::get('/', 'BioController@index')->name('index');
-        // Route::get('view-report/{_id}', 'PagesController@view_report')->name('view-report');
-        Route::post('post/{tree}', 'PostController@tree')->name('post');
-        
-        Route::prefix('templates')->name('templates-')->namespace('Templates')->group(function(){
-            Route::get('/', 'TemplatesController@index')->name('index');
-            
-            Route::post('post/{tree}', 'PostController@tree')->name('post');
-        });
-    });
-
-    // Payments
-    Route::prefix('payments')->name('payments-')->namespace('Payments')->group(function(){
-        Route::get('/', 'PaymentsController@index')->name('index');
-        // Pending Payments
-        Route::get('pending', 'PaymentsController@pending')->name('pending');
-        Route::post('post/{tree}', 'PostController@tree')->name('post');
-    });
-    
-    // Plans
-    Route::prefix('plans')->name('plans-')->namespace('Plans')->group(function(){
-        Route::get('/', 'PlansController@index')->name('index');
-        Route::post('post/{tree}', 'PostController@tree')->name('post');
-    });
-    
-    // Translation
-    Route::prefix('languages')->name('languages-')->namespace('Languages')->group(function(){
-        Route::get('/', 'TranslationController@languages')->name('index');
-        
-        Route::post('post/{tree}', 'PostController@tree')->name('post');
-    });
-    
-    // Template
-    Route::prefix('templates')->name('templates-')->namespace('Templates')->group(function(){
-        Route::get('/', 'TemplatesController@index')->name('index');
-        
-        Route::post('post/{tree}', 'PostController@tree')->name('post');
-    });
-    
-    // Website
-    Route::prefix('website')->name('website-')->namespace('Website')->group(function(){
-        Route::get('/', 'WebsiteController@index')->name('index');
-        
-        Route::post('post/{tree}', 'PostController@tree')->name('post');
-    });
-
-    // Settings
-    Route::prefix('settings')->name('settings-')->namespace('Settings')->group(function(){
-        Route::get('/', 'SettingsController@index')->name('index');
-        
-        Route::post('post/{tree}', 'PostController@tree')->name('post');
-    });
-});
-// ADD THIS ROUTE HERE FOR THE PARTNERS PAGE
-Route::get('/shuvrajit', function () {
-    return view('pages.shuvrajit');
-})->name('shuvrajit');
-// In routes/web.php
-use App\Http\Controllers\MewayzPartnershipController;
-
-// ADD THIS ROUTE HERE FOR THE PARTNERS PAGE
-Route::get('/partners', function () {
-    return view('pages.partners');
-})->name('partners');
-
-Route::post('/api/send-mewayz-email', [MewayzPartnershipController::class, 'sendVettingEmail'])->name('send.mewayz.email');
-require __DIR__.'/folio.php';

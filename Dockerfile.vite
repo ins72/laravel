@@ -1,0 +1,19 @@
+FROM node:18-alpine
+
+# Set working directory
+WORKDIR /var/www
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install --legacy-peer-deps
+
+# Copy application files
+COPY . .
+
+# Expose port 3003
+EXPOSE 3003
+
+# Start Vite development server
+CMD ["npm", "run", "dev"] 
