@@ -13,6 +13,9 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="font-sans antialiased">
     <div class="min-h-screen bg-gray-100">
@@ -79,6 +82,13 @@
                                     Complete CRUD operations with database-driven content. No hardcoded data, fully production-ready with comprehensive API and web interface.
                                 </p>
                                 <div class="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
+                                    <div class="rounded-md shadow mr-4">
+                                        <a href="{{ route('ecommerce.index') }}" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-green-600 hover:bg-green-700 md:py-4 md:text-lg md:px-10">
+                                            <i class="fas fa-shopping-bag mr-2"></i>
+                                            Shop Now
+                                        </a>
+                                    </div>
+                                    
                                     @auth
                                         @if(Auth::user()->role === 1)
                                             <div class="rounded-md shadow">
