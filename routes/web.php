@@ -19,6 +19,23 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// Ecommerce Routes
+Route::prefix('shop')->name('ecommerce.')->group(function () {
+    Route::get('/', [App\Http\Controllers\EcommerceController::class, 'index'])->name('index');
+    Route::get('/product/{slug}', [App\Http\Controllers\EcommerceController::class, 'show'])->name('show');
+    Route::get('/cart', [App\Http\Controllers\EcommerceController::class, 'cart'])->name('cart');
+    Route::post('/cart/add', [App\Http\Controllers\EcommerceController::class, 'addToCart'])->name('addToCart');
+    Route::put('/cart/update', [App\Http\Controllers\EcommerceController::class, 'updateCart'])->name('updateCart');
+    Route::delete('/cart/remove/{id}', [App\Http\Controllers\EcommerceController::class, 'removeFromCart'])->name('removeFromCart');
+    Route::get('/checkout', [App\Http\Controllers\EcommerceController::class, 'checkout'])->name('checkout');
+    Route::post('/checkout/process', [App\Http\Controllers\EcommerceController::class, 'processCheckout'])->name('processCheckout');
+    Route::get('/orders', [App\Http\Controllers\EcommerceController::class, 'orders'])->name('orders');
+    Route::get('/orders/{id}', [App\Http\Controllers\EcommerceController::class, 'orderDetails'])->name('orderDetails');
+    Route::post('/review/{id}', [App\Http\Controllers\EcommerceController::class, 'addReview'])->name('addReview');
+    Route::post('/coupon/apply', [App\Http\Controllers\EcommerceController::class, 'applyCoupon'])->name('applyCoupon');
+    Route::delete('/coupon/remove', [App\Http\Controllers\EcommerceController::class, 'removeCoupon'])->name('removeCoupon');
+});
+
 // Admin Routes
 Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
