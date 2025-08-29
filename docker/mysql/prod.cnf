@@ -1,0 +1,56 @@
+[mysqld]
+# Basic Settings
+default-storage-engine = InnoDB
+character-set-server = utf8mb4
+collation-server = utf8mb4_unicode_ci
+
+# Connection Settings
+max_connections = 200
+max_connect_errors = 1000000
+table_open_cache = 2000
+max_allowed_packet = 64M
+
+# InnoDB Settings
+innodb_buffer_pool_size = 1G
+innodb_log_file_size = 256M
+innodb_log_buffer_size = 64M
+innodb_flush_log_at_trx_commit = 2
+innodb_lock_wait_timeout = 50
+innodb_flush_method = O_DIRECT
+
+# Query Cache (MySQL 5.7+)
+query_cache_type = 1
+query_cache_size = 128M
+query_cache_limit = 2M
+
+# Performance Settings
+tmp_table_size = 64M
+max_heap_table_size = 64M
+sort_buffer_size = 4M
+read_buffer_size = 2M
+read_rnd_buffer_size = 8M
+myisam_sort_buffer_size = 8M
+key_buffer_size = 32M
+
+# Binary Logging
+log-bin = mysql-bin
+binlog_format = ROW
+expire_logs_days = 7
+max_binlog_size = 100M
+
+# Slow Query Log
+slow_query_log = 1
+slow_query_log_file = /var/log/mysql/slow.log
+long_query_time = 2
+
+# Error Log
+log-error = /var/log/mysql/error.log
+
+# Security
+local_infile = 0
+
+[mysql]
+default-character-set = utf8mb4
+
+[client]
+default-character-set = utf8mb4
