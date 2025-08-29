@@ -15,9 +15,27 @@ use App\Http\Controllers\User\ProfileController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+// Ecommerce Routes
+Route::get('/products', [App\Http\Controllers\ProductController::class, 'index'])->name('products.index');
+Route::get('/products/featured', [App\Http\Controllers\ProductController::class, 'featured'])->name('products.featured');
+Route::get('/products/deals', [App\Http\Controllers\ProductController::class, 'deals'])->name('products.deals');
+Route::get('/products/{slug}', [App\Http\Controllers\ProductController::class, 'show'])->name('products.show');
+
+// Cart Routes
+Route::get('/cart', [App\Http\Controllers\CartController::class, 'index'])->name('cart.index');
+Route::post('/cart/add', [App\Http\Controllers\CartController::class, 'add'])->name('cart.add');
+Route::put('/cart/update', [App\Http\Controllers\CartController::class, 'update'])->name('cart.update');
+Route::delete('/cart/remove/{productId}', [App\Http\Controllers\CartController::class, 'remove'])->name('cart.remove');
+Route::delete('/cart/clear', [App\Http\Controllers\CartController::class, 'clear'])->name('cart.clear');
+Route::get('/cart/count', [App\Http\Controllers\CartController::class, 'getCartCount'])->name('cart.count');
+
+// Static Pages
+Route::get('/about', [App\Http\Controllers\HomeController::class, 'about'])->name('about');
+Route::get('/contact', [App\Http\Controllers\HomeController::class, 'contact'])->name('contact');
+Route::get('/terms', [App\Http\Controllers\HomeController::class, 'terms'])->name('terms');
+Route::get('/privacy', [App\Http\Controllers\HomeController::class, 'privacy'])->name('privacy');
 
 // Admin Routes
 Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(function () {
@@ -79,6 +97,17 @@ Route::prefix('user')->middleware('auth')->name('user.')->group(function () {
     Route::get('/courses/{id}/edit', [ProfileController::class, 'courseEdit'])->name('courses.edit');
     Route::put('/courses/{id}', [ProfileController::class, 'courseUpdate'])->name('courses.update');
     Route::delete('/courses/{id}', [ProfileController::class, 'courseDelete'])->name('courses.delete');
+    
+    // Order Management
+    Route::get('/orders', [App\Http\Controllers\OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{id}', [App\Http\Controllers\OrderController::class, 'show'])->name('orders.show');
+    Route::delete('/orders/{id}/cancel', [App\Http\Controllers\OrderController::class, 'cancel'])->name('orders.cancel');
+});
+
+// Checkout Routes (require authentication)
+Route::middleware('auth')->group(function () {
+    Route::get('/checkout', [App\Http\Controllers\OrderController::class, 'checkout'])->name('checkout');
+    Route::post('/checkout', [App\Http\Controllers\OrderController::class, 'store'])->name('orders.store');
 });
 
 require __DIR__.'/auth.php';
